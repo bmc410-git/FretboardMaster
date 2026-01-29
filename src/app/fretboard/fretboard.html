@@ -1,0 +1,111 @@
+<div class="game-container">
+  <div class="game-header">
+    <h1>🎸 Guitar Fretboard Master</h1>
+    
+    @if (!gameState.isGameActive && gameState.score > 0) {
+      <div class="game-over">
+        <h2>Game Over!</h2>
+        <p>Final Score: {{ gameState.score }}</p>
+        <button class="btn-start" (click)="resetGame()">Play Again</button>
+      </div>
+    }
+    
+    @if (!gameState.isGameActive && gameState.score === 0) {
+      <button class="btn-start" (click)="startGame()">Start Game</button>
+    }
+    
+    @if (gameState.isGameActive) {
+      <div class="game-info">
+        <div class="info-panel">
+          <div class="target-note">
+            <h2>Find Note:</h2>
+            <div class="note-display">{{ gameState.targetNote?.name }}</div>
+            <div class="string-instruction">on the <strong>{{ getStringName(gameState.targetNote?.string) }}</strong> string</div>
+          </div>
+          
+          <div class="stats">
+            <div class="stat">
+              <span class="label">Score:</span>
+              <span class="value">{{ gameState.score }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Lives:</span>
+              <span class="value">{{ '❤️'.repeat(gameState.lives) }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Streak:</span>
+              <span class="value">🔥 {{ gameState.streak }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Level:</span>
+              <span class="value">{{ gameState.level }}</span>
+            </div>
+          </div>
+        </div>
+        
+        @if (showFeedback) {
+          <div class="feedback" [class]="feedbackClass">
+            {{ feedbackMessage }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (gameState.isGameActive) {
+    <div class="fretboard-container">
+      <div class="fretboard">
+        <!-- String labels -->
+        <div class="string-labels">
+          @for (name of stringNames; track name; let i = $index) {
+            <div class="string-label">{{ name }}</div>
+          }
+        </div>
+
+        <!-- Fretboard grid -->
+        <div class="fretboard-grid">
+          @for (string of strings; track string) {
+            <div class="string-row">
+              @for (fret of frets; track fret) {
+                <div 
+                  class="fret-position"
+                  [class.open-string]="fret === 0"
+                  [class.selected]="selectedPosition?.string === string && selectedPosition?.fret === fret"
+                  (click)="onFretClick(string, fret)">
+                  
+                  <div class="string-line"></div>
+                  
+                  @if (fret > 0) {
+                    <div class="fret-wire"></div>
+                  }
+                  
+                  <!-- Fret markers -->
+                  @if (string === 2 && getFretMarkerClass(fret) === 'single-dot') {
+                    <div class="fret-marker single"></div>
+                  }
+                  @if (string === 1 && getFretMarkerClass(fret) === 'double-dot') {
+                    <div class="fret-marker double top"></div>
+                  }
+                  @if (string === 4 && getFretMarkerClass(fret) === 'double-dot') {
+                    <div class="fret-marker double bottom"></div>
+                  }
+                </div>
+              }
+            </div>
+          }
+          
+          <!-- Fret numbers -->
+          <div class="fret-numbers">
+            @for (fret of frets; track fret) {
+              <div class="fret-number">
+                @if (fret > 0) {
+                  {{ fret }}
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
