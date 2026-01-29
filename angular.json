@@ -30,7 +30,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/FretboardGame/",
+              "baseHref": "/FretboardMaster/",
               "budgets": [
                 {
                   "type": "initial",
